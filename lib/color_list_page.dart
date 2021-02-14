@@ -12,10 +12,10 @@ class ColorsListPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ColorsListPageState();
 }
 
-class _ColorsListPageState extends State<ColorsListPage> 
-// if "with TickerProviderStateMixin" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container by the way
-// with TickerProviderStateMixin 
-{
+class _ColorsListPageState extends State<ColorsListPage>
+// if "with build" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container by the way
+    with
+        TickerProviderStateMixin {
   List<int> colorsList;
 
   @override
