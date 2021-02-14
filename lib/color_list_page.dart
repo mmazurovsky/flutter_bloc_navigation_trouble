@@ -12,7 +12,10 @@ class ColorsListPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ColorsListPageState();
 }
 
-class _ColorsListPageState extends State<ColorsListPage> {
+class _ColorsListPageState extends State<ColorsListPage> 
+// if "with TickerProviderStateMixin" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container by the way
+// with TickerProviderStateMixin 
+{
   List<int> colorsList;
 
   @override
@@ -31,33 +34,33 @@ class _ColorsListPageState extends State<ColorsListPage> {
         backgroundColor: widget.color,
       ),
       body: BlocConsumer<ColorsBloc, ColorsState>(
-          listener: (context, state) {
-            if (state is ColorsLoadingState) {
-              print('loading ' + DateTime.now().toString());
-            } else if (state is ColorsLoadedState) {
-              print('loaded ' + DateTime.now().toString());
-            } else if (state is ColorsNavigationState) {
-              widget.onPush(state.colorIndex);
-            } else {
-              print('some unknown state');
+        listener: (context, state) {
+          if (state is ColorsLoadingState) {
+            print('loading ' + DateTime.now().toString());
+          } else if (state is ColorsLoadedState) {
+            print('loaded ' + DateTime.now().toString());
+          } else {
+            print('some unknown state');
+          }
+        },
+        builder: (context, state) {
+          if (state is ColorsLoadingState) {
+            return _buildLoading();
+          } else if (state is ColorsLoadedState) {
+            if (colorsList != state.loadedColors) {
+              colorsList = state.loadedColors;
+              return _buildList();
             }
-            // ignore: missing_return
-          },
-          buildWhen: (previousState, currentState) =>
-              !(currentState is ColorsNavigationState),
-          builder: (context, state) {
-            if (state is ColorsLoadingState) {
-              return _buildLoading();
-            } else if (state is ColorsLoadedState) {
-              if (colorsList != state.loadedColors) {
-                colorsList = state.loadedColors;
-                return _buildList();
-              }
-            }
-            // TODO returning this is not good, I don't really understand why this it is returned after navigator push or navigator pop
-            // I need to preserve the ColorsLoadedState on push and get it back on pop, could you please help?
-            return Container(color: Colors.purple);
-          }),
+          }
+          // returning this is not good :)
+          return Container(
+            color: Colors.purple,
+            child: Center(
+              child: Text('Lost ColorsLoadedState'),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -71,13 +74,12 @@ class _ColorsListPageState extends State<ColorsListPage> {
             return Container(
               color: widget.color[materialIndex],
               child: ListTile(
-                  title:
-                      Text('$materialIndex', style: TextStyle(fontSize: 24.0)),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () =>
-                      // widget.onPush(materialIndex),
-                      BlocProvider.of<ColorsBloc>(context)
-                          .add(NavigateDetailColor(materialIndex))),
+                title: Text('$materialIndex', style: TextStyle(fontSize: 24.0)),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () => widget.onPush(materialIndex),
+                // BlocProvider.of<ColorsBloc>(context)
+                //     .add(NavigateDetailColor(materialIndex)),
+              ),
             );
           }),
     );

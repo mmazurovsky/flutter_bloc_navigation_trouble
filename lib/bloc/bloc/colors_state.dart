@@ -18,9 +18,3 @@ class ColorsLoadedState extends ColorsState {
   List<int> get loadedColors =>
       _loadedColors;
 }
-
-class ColorsNavigationState extends ColorsState {
-  final int colorIndex;
-  ColorsNavigationState(this.colorIndex);
-}
-

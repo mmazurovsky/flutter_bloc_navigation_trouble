@@ -19,9 +19,7 @@ class ColorsBloc extends Bloc<ColorsEvent, ColorsState> {
       final loadedColors =
           await Future.delayed(Duration(seconds: 2), () => dataProvided);
       yield ColorsLoadedState(loadedColors);
-    } else if (event is NavigateDetailColor) {
-      yield ColorsNavigationState(event.colorIndex);
-    }
+    } 
   }
 
   final List<int> dataProvided = [
