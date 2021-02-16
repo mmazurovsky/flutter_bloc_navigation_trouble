@@ -13,7 +13,7 @@ class ColorsListPage extends StatefulWidget {
 }
 
 class _ColorsListPageState extends State<ColorsListPage>
-// if "with build" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container by the way
+// if "with TickerProviderStateMixin" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container
     with
         TickerProviderStateMixin {
   List<int> colorsList;
@@ -52,7 +52,7 @@ class _ColorsListPageState extends State<ColorsListPage>
               return _buildList();
             }
           }
-          // returning this is not good :)
+          // Purple Container which is unexpectedly returned on navigator push
           return Container(
             color: Colors.purple,
             child: Center(
@@ -77,8 +77,6 @@ class _ColorsListPageState extends State<ColorsListPage>
                 title: Text('$materialIndex', style: TextStyle(fontSize: 24.0)),
                 trailing: Icon(Icons.chevron_right),
                 onTap: () => widget.onPush(materialIndex),
-                // BlocProvider.of<ColorsBloc>(context)
-                //     .add(NavigateDetailColor(materialIndex)),
               ),
             );
           }),

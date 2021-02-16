@@ -10,9 +10,3 @@ abstract class ColorsEvent extends Equatable {
 class InitialLoadColors extends ColorsEvent {
   InitialLoadColors();
 }
-
-class NavigateDetailColor extends ColorsEvent {
-  final int colorIndex;
-  NavigateDetailColor(this.colorIndex);
-}
-
