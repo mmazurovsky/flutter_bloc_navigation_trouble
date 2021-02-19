@@ -13,26 +13,17 @@ class ColorsListPage extends StatefulWidget {
 }
 
 class _ColorsListPageState extends State<ColorsListPage>
-// if "with TickerProviderStateMixin" uncommented, navigator push unexpectedly triggers BlocBuilder to return purple Container
-    with
-        TickerProviderStateMixin {
-  List<int> colorsList;
-
+    with TickerProviderStateMixin {
   @override
   void initState() {
-    BlocProvider.of<ColorsBloc>(context)..add(InitialLoadColors());
     super.initState();
+    BlocProvider.of<ColorsBloc>(context)..add(InitialLoadColors());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-        ),
-        backgroundColor: widget.color,
-      ),
+      appBar: AppBar(title: Text(widget.title), backgroundColor: widget.color),
       body: BlocConsumer<ColorsBloc, ColorsState>(
         listener: (context, state) {
           if (state is ColorsLoadingState) {
@@ -45,12 +36,13 @@ class _ColorsListPageState extends State<ColorsListPage>
         },
         builder: (context, state) {
           if (state is ColorsLoadingState) {
-            return _buildLoading();
+            return _Loading();
           } else if (state is ColorsLoadedState) {
-            if (colorsList != state.loadedColors) {
-              colorsList = state.loadedColors;
-              return _buildList();
-            }
+            return _ListView(
+              colorsList: state.loadedColors,
+              color: widget.color,
+              onPush: widget.onPush,
+            );
           }
           // Purple Container which is unexpectedly returned on navigator push
           return Container(
@@ -63,8 +55,33 @@ class _ColorsListPageState extends State<ColorsListPage>
       ),
     );
   }
+}
 
-  Widget _buildList() {
+class _Loading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(
+        backgroundColor: Colors.grey,
+      ),
+    );
+  }
+}
+
+class _ListView extends StatelessWidget {
+  const _ListView({
+    Key key,
+    @required this.colorsList,
+    @required this.color,
+    @required this.onPush,
+  }) : super(key: key);
+
+  final List<int> colorsList;
+  final MaterialColor color;
+  final void Function(int) onPush;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: ListView.builder(
@@ -72,22 +89,14 @@ class _ColorsListPageState extends State<ColorsListPage>
           itemBuilder: (BuildContext content, int index) {
             int materialIndex = colorsList[index];
             return Container(
-              color: widget.color[materialIndex],
+              color: color[materialIndex],
               child: ListTile(
                 title: Text('$materialIndex', style: TextStyle(fontSize: 24.0)),
                 trailing: Icon(Icons.chevron_right),
-                onTap: () => widget.onPush(materialIndex),
+                onTap: () => onPush(materialIndex),
               ),
             );
           }),
-    );
-  }
-
-  Widget _buildLoading() {
-    return Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.grey,
-      ),
     );
   }
 }
