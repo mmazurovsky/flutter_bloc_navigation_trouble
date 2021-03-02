@@ -4,7 +4,6 @@ import 'package:flutter_bug_in_bloc_project/tab_item.dart';
 
 import 'color_list_page.dart';
 
-
 // 1
 class TabNavigatorRoutes {
   static const String root = '/';
@@ -38,13 +37,13 @@ class TabNavigator extends StatelessWidget {
   // 4
   @override
   Widget build(BuildContext context) {
-    final routeBuilders = _routeBuilders(context);
     return Navigator(
       key: navigatorKey,
       initialRoute: TabNavigatorRoutes.root,
       onGenerateRoute: (routeSettings) {
         return MaterialPageRoute(
-          builder: (context) => routeBuilders[routeSettings.name](context),
+          builder: (context) =>
+              _routeBuilders(context)[routeSettings.name](context),
         );
       },
     );
